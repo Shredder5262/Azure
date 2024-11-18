@@ -1,7 +1,7 @@
 
 
 
-Connect-AzAccount -Tenant '1f6e2dff-78cb-428b-a93a-293c68d7bfcf'
+Connect-AzAccount -Tenant ''
 
 
 New-AzTenantDeployment -Location eastus -TemplateFile 'Bicep Templates\Management Group Templates\ManagementGroups.bicep' -whatif
@@ -11,11 +11,11 @@ New-AzTenantDeployment -Location eastus -TemplateFile 'Bicep Templates\Managemen
 Connect-AzAccount
 
 #get object Id of the current user (that is used above)
-$user = "asutcliffe25_outlook.com#EXT#@asutcliffe25outlook.onmicrosoft.com"
+$user = ""
 
 
 #assign Owner role at Tenant root scope ("/") as a User Access Administrator to current user
-New-AzRoleAssignment -Scope '/' -RoleDefinitionName 'Owner' -ObjectId d352bac1-71b6-4e29-b26f-4d1b793d1f75
+New-AzRoleAssignment -Scope '/' -RoleDefinitionName 'Owner' -ObjectId 
 
 #(optional) assign Owner role at Tenant root scope ("/") as a User Access Administrator to service principal (set $spndisplayname to your service principal displayname)
 $spndisplayname = "<ServicePrincipal DisplayName>"
