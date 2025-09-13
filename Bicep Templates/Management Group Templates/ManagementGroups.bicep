@@ -1,80 +1,110 @@
-// Bicep Template to Deploy Management Groups Hierarchy
+#################################################################################
+# Written By: Andrew Sutcliffe                                                  #
+# Company: [company name]                                                       #
+#                                                                               #
+# Description: Bicep template to deploy a DTAP Management Group hierarchy,      #
+#              including groups for decommissioned subscriptions and            #
+#              administrative subscriptions. All groups are suffixed with -MG.  #
+#                                                                               #
+# Notes: Ensure you have tenant-level permissions to deploy management groups.  #
+#                                                                               #
+# Environment: Tenant Scope                                                     #
+# Last updated By: Andrew Sutcliffe                                             #
+# Script Version: 1.0                                                           #
+#################################################################################
+
+#Static Variables
 targetScope = 'tenant'
 
+######################################################################################
+######################################################################################
+#Authentication
+# (Handled by the deployment context when running the Bicep file)
+######################################################################################
+######################################################################################
 
-param globalMgName string = 'Global'
-param decommissionMgName string = 'Decommission-MG'
-param developmentMgName string = 'Development-MG'
-param productionMgName string = 'Production-MG'
-param sandboxMgName string = 'Sandbox-MG'
-param testMgName string = 'Test-MG'
-
-// Deploy Parent Management Group - Global
-resource globalMg 'Microsoft.Management/managementGroups@2021-04-01' = {
-  name: globalMgName
+# Root Management Group
+resource rootMgmtGroup 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: 'contoso-root-MG'
   properties: {
-    displayName: 'Global'
+    displayName: 'Contoso Root - MG'
   }
 }
 
+######################################################################################
+######################################################################################
+# DTAP Management Groups
+######################################################################################
+######################################################################################
 
-// Deploy Child Management Groups under Global
-resource decommissionMg 'Microsoft.Management/managementGroups@2021-04-01' = {
-  name: decommissionMgName
+resource devMgmtGroup 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: 'contoso-dev-MG'
   properties: {
-    displayName: 'Decommission Management Group'
-    details:{
-      parent: {
-        id: globalMg.id
-      }
-    }
-  }
-}
-
-resource developmentMg 'Microsoft.Management/managementGroups@2021-04-01' = {
-  name: developmentMgName
-  properties: {
-    displayName: 'Development Management Group'
-    details:{
-      parent: {
-        id: globalMg.id
-      }
-    }
-  }
-}
-
-resource productionMg 'Microsoft.Management/managementGroups@2021-04-01' = {
-  name: productionMgName
-  properties: {
-    displayName: 'Production Management Group'
-    details:{
-      parent: {
-        id: globalMg.id
-      }
-    }
-  }
-}
-
-resource sandboxMg 'Microsoft.Management/managementGroups@2021-04-01' = {
-  name: sandboxMgName
-  properties: {
-    displayName: 'Sandbox Management Group'
-    details:{
+    displayName: 'Development - MG'
     parent: {
-        id: globalMg.id
-      }
+      id: rootMgmtGroup.id
     }
   }
 }
 
-resource testMg 'Microsoft.Management/managementGroups@2021-04-01' = {
-  name: testMgName
+resource testMgmtGroup 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: 'contoso-test-MG'
   properties: {
-    displayName: 'Test Management Group'
-    details:{
+    displayName: 'Test - MG'
     parent: {
-        id: globalMg.id
-      }
+      id: rootMgmtGroup.id
+    }
+  }
+}
+
+resource accMgmtGroup 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: 'contoso-acc-MG'
+  properties: {
+    displayName: 'Acceptance - MG'
+    parent: {
+      id: rootMgmtGroup.id
+    }
+  }
+}
+
+resource prodMgmtGroup 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: 'contoso-prod-MG'
+  properties: {
+    displayName: 'Production - MG'
+    parent: {
+      id: rootMgmtGroup.id
+    }
+  }
+}
+
+######################################################################################
+######################################################################################
+# Decommissioned Subscriptions Group
+######################################################################################
+######################################################################################
+
+resource decommMgmtGroup 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: 'contoso-decom-MG'
+  properties: {
+    displayName: 'Decommissioned - MG'
+    parent: {
+      id: rootMgmtGroup.id
+    }
+  }
+}
+
+######################################################################################
+######################################################################################
+# Administrative Subscriptions Group
+######################################################################################
+######################################################################################
+
+resource adminMgmtGroup 'Microsoft.Management/managementGroups@2020-05-01' = {
+  name: 'contoso-admin-MG'
+  properties: {
+    displayName: 'Administration - MG'
+    parent: {
+      id: rootMgmtGroup.id
     }
   }
 }
